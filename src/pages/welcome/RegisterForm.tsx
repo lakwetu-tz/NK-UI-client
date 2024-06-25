@@ -52,7 +52,7 @@ const RegisterForm: React.FC = () => {
 
         try {
             setIsLoading(true);
-            const response = await axios.post(`${process.env.base_url}/user/register`, {
+            const response = await axios.post("http://127.0.0.1:4000/api/v1/user/register", {
                 phone,
                 name,
                 password,
@@ -60,15 +60,6 @@ const RegisterForm: React.FC = () => {
             
             console.log(response.data.status);
             console.log(typeof(response.data.status));
-
-            if (response.data.status === 'error') {
-                setError(response.data.message);
-                setIsLoading(false);
-
-                // return an alert
-                return;
-
-            }
 
             if (response.data.status === 200) {
                 setError('');

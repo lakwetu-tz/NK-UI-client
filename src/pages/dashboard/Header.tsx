@@ -15,21 +15,21 @@ const Header: React.FC = () => {
     const navigate = useNavigate();
 
     const nav: NavItem[] = [
-        { name: 'Apply Loan', icon: <FiClipboard size={24}/>, link: "/personal" },
-        { name: 'Pay Loan', icon: <FiAirplay size={24}/>, link: "/pay" },
-        { name: 'Agreement', icon: <FiPaperclip size={24}/>, link: "/contract" }
+        { name: 'Apply Loan', icon: <FiClipboard size={22}/>, link: "/personal" },
+        { name: 'Pay Loan', icon: <FiAirplay size={22}/>, link: "/pay" },
+        { name: 'Agreement', icon: <FiPaperclip size={22}/>, link: "/contract" }
     ];
 
     const [currentCard, setCurrentCard] = useState(0);
     const [showAmounts, setShowAmounts] = useState(true);
 
-    const handleNextCard = () => {
-        setCurrentCard((prevCard) => (prevCard + 1) % cardDetails.length);
-    };
+    // const handleNextCard = () => {
+    //     setCurrentCard((prevCard) => (prevCard + 1) % cardDetails.length);
+    // };
 
-    const handlePrevCard = () => {
-        setCurrentCard((prevCard) => (prevCard - 1 + cardDetails.length) % cardDetails.length);
-    };
+    // const handlePrevCard = () => {
+    //     setCurrentCard((prevCard) => (prevCard - 1 + cardDetails.length) % cardDetails.length);
+    // };
 
     const toggleShowAmounts = () => {
         setShowAmounts(!showAmounts);
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
     const cardDetails = [
         { label: 'Sum Loan', amount: loan_balance },
         { label: 'Total Balance', amount: loan_balance },
-        { label: 'Monthly Amount', amount: loan_balance }
+        // { label: 'Monthly Amount', amount: loan_balance }
     ];
 
     return (
@@ -63,7 +63,7 @@ const Header: React.FC = () => {
                     </div>
                 </div>
                 <div className='relative flex flex-col md:flex-row gap-x-4 justify-center'>
-                    <FiArrowLeft onClick={handlePrevCard} className='md:hidden absolute left-2 w-6 h-6 cursor-pointer' />
+                    {/* <FiArrowLeft onClick={handlePrevCard} className='md:hidden absolute left-2 w-6 h-6 cursor-pointer' /> */}
                     {cardDetails.map((card, index) => (
                         <div key={index} className={`${currentCard === index ? 'block' : 'hidden'} md:flex border-[1px] rounded-lg items-center justify-center bg-green-500 shadow-md px-4 py-2 w-full md:w-auto`}>
                             <div className='px-4 py-2'>
@@ -78,21 +78,21 @@ const Header: React.FC = () => {
                                 <p className='text-4xl text-center mt-4'>
                                     {showAmounts ? `TZS ${card.amount}` : '****'}
                                 </p>
-                                <div className='mt-8 md:hidden border-[1px] mb-8'></div>
-                                <div className="flex md:hidden flex-wrap justify-center gap-x-8">
+                                <div className='mt-8 md:hidden border-[1px] mb-4'></div>
+                                <div className="flex md:hidden justify-center gap-x-8">
                                     {nav.map((item, key) => (
                                         <Link key={key} to={item.link} className="text-center text-gray-600">
-                                            <button className='bg-white px-4 py-4 rounded-md'>
+                                            <button className='bg-white px-2 py-2 rounded-md'>
                                                 {item.icon}
                                             </button>
-                                            <p className="text-xs mt-[4px]">{item.name}</p>
+                                            <p className="text-[10px] mt-[4px]">{item.name}</p>
                                         </Link>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     ))}
-                    <FiArrowRight onClick={handleNextCard} className='md:hidden absolute right-2 w-6 h-6 cursor-pointer' />
+                    {/* <FiArrowRight onClick={handleNextCard} className='md:hidden absolute right-2 w-6 h-6 cursor-pointer' /> */}
                 </div>
             </div>
         </header>

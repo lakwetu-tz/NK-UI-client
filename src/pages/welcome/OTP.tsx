@@ -44,7 +44,7 @@ const OTPVerification: React.FC = () => {
 
     try {
       const otpCode = otp.join('');
-      const response = await axios.post('http://172.233.137.139:4000/api/v1/user/verify-otp', { phone, otp: otpCode });
+      const response = await axios.post('http://127.0.0.1:4000/api/v1/user/verify-otp', { phone, otp: otpCode });
       setMessage(response.data.message);
       console.log(response.data.message);
       console.log(typeof(response.data.message));
@@ -60,7 +60,7 @@ const OTPVerification: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col items-center justify-center h-screen w-full dark:bg-gray-900">
+    <div className="bg-gray-100 flex flex-col items-center justify-center h-screen w-full dark:bg-gray-900 px-2">
       <div className="w-full max-w-md px-8 py-10 bg-white rounded-lg shadow-md dark:bg-gray-950 dark:text-gray-200">
         <h1 className="text-2xl font-semibold text-center mb-6">Enter OTP</h1>
         <p className="text-gray-600 text-center mb-4">Code sent to {phone}</p>
