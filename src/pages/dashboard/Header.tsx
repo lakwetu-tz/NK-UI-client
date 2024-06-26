@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiClipboard, FiEye, FiEyeOff, FiArrowLeft, FiArrowRight, FiAirplay, FiPaperclip } from 'react-icons/fi';
+import { FiClipboard, FiEye, FiEyeOff, FiAirplay, FiPaperclip, FiUser } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthProvider';
+import { useAppContext } from '../../context/AppProvider';
 
 interface NavItem {
     name: string;
@@ -14,6 +15,10 @@ const Header: React.FC = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
 
+    const { activeTab, setActiveTab, toggleBalances, showBalances } = useAppContext();
+
+    
+
     const nav: NavItem[] = [
         { name: 'Apply Loan', icon: <FiClipboard size={22}/>, link: "/personal" },
         { name: 'Pay Loan', icon: <FiAirplay size={22}/>, link: "/pay" },
@@ -21,7 +26,6 @@ const Header: React.FC = () => {
     ];
 
     const [currentCard, setCurrentCard] = useState(0);
-    const [showAmounts, setShowAmounts] = useState(true);
 
     // const handleNextCard = () => {
     //     setCurrentCard((prevCard) => (prevCard + 1) % cardDetails.length);
@@ -32,12 +36,18 @@ const Header: React.FC = () => {
     // };
 
     const toggleShowAmounts = () => {
-        setShowAmounts(!showAmounts);
+        toggleBalances();
     };
 
+    const handleTabChange = () => {
+        setActiveTab('profile')
+        navigate('/profile')
+    }
+
     const cardDetails = [
-        { label: 'Sum Loan', amount: loan_balance },
+       
         { label: 'Total Balance', amount: loan_balance },
+        { label: 'Sum Loan', amount: loan_balance },
         // { label: 'Monthly Amount', amount: loan_balance }
     ];
 
@@ -57,9 +67,9 @@ const Header: React.FC = () => {
                                 </Link>
                             ))}
                         </nav>
-                        <img onClick= {() => {
-                            navigate("/profile")
-                        }} src={require("../../assets/profile.jpg")} alt="profile" className="rounded-full object-center bg-yellow-300 w-12 h-12 md:w-12 mr-2 cursor-pointer" />
+                        
+                        <FiUser onClick={handleTabChange} className="rounded-full object-center bg-gray-100 text-gray-600 w-8 h-8 md:w-8 mr-2 cursor-pointer p-2" />
+                        
                     </div>
                 </div>
                 <div className='relative flex flex-col md:flex-row gap-x-4 justify-center'>
@@ -72,11 +82,11 @@ const Header: React.FC = () => {
                                         {card.label}
                                     </p>
                                     <button onClick={toggleShowAmounts} className="ml-2">
-                                        {showAmounts ? <FiEyeOff className="inline" /> : <FiEye className="inline" />}
+                                        {showBalances ? <FiEyeOff className="inline" /> : <FiEye className="inline" />}
                                     </button>
                                 </div>
                                 <p className='text-4xl text-center mt-4'>
-                                    {showAmounts ? `TZS ${card.amount}` : '****'}
+                                    {showBalances ? `TZS ${card.amount}` : '****'}
                                 </p>
                                 <div className='mt-8 md:hidden border-[1px] mb-4'></div>
                                 <div className="flex md:hidden justify-center gap-x-8">

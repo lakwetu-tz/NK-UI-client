@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaCircleInfo } from 'react-icons/fa6';
 import validator from 'validator';
-import { FiArrowLeft, FiUser } from 'react-icons/fi';
+import { FiUser } from 'react-icons/fi';
 import { useFormContext } from '../../context/FormProvider';
 import { useAppContext } from '../../context/AppProvider';
 
@@ -91,8 +90,8 @@ const PersonalForm: React.FC = () => {
     
             }, )    
             setIsLoading(true);
-            console.log(response.data);
-            console.log(typeof(response.data));
+            console.log(`status code is : ${response.data.status}`);
+            
 
 
             if (response.data.status === 'error') {
@@ -101,17 +100,26 @@ const PersonalForm: React.FC = () => {
                 return;
             }
 
-            if (response.data.status === 'Ok') {
-                setIsLoading(false);
+            if (response.data.status === 'submitted') {
+                setIsLoading(true);
+                console.log("Sending images to the server")
                 setFormData({});
-                await axios.post('http://127.0.0.1:4000/api/v1/form/personal/upload', { formId, frontId, backId },
+                const result = await axios.post('http://127.0.0.1:4000/api/v1/form/personal/upload', { formId, frontId, backId },
                         {
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             },
                         }
                     );
-                navigate('/guarantor');
+                    console.log(result.data.status);
+
+                if (result.data.status === 'Ok') {
+                    setIsLoading(false);
+                    console.log("Images uploaded successfully");
+                    navigate('/guarantor');
+                }
+                
+
             }
         } catch (err) {
             if (axios.isAxiosError(err) && err.response) {
@@ -140,7 +148,7 @@ const PersonalForm: React.FC = () => {
     return (
         <section>
             {isError && <p className='text-red-500'>{isError}</p>}
-            <form onSubmit={handleSubmit} className='container flex flex-col mx-auto space-y-12 mb-12 px-4'>
+            <form onSubmit={handleSubmit} className='container flex flex-col mx-auto space-y-12 mb-12 px-4 font-serif'>
                 <p ref={errRef} className={error ? "text-red-500" : "text-green-500"} aria-live="assertive">{error}</p>
                 <div className=''>
                 

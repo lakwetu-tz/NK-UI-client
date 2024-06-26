@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { FaCircleInfo } from 'react-icons/fa6';
 import axios from 'axios';
-import { FiArrowLeft, FiUser, FiUserPlus } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
+import { FiArrowLeft, FiMinus, FiUserPlus } from 'react-icons/fi';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Guarantor {
     firstName: string;
@@ -17,6 +16,7 @@ interface Guarantor {
 const MthaminiForm: React.FC = () => {
     const emailRef = useRef<HTMLInputElement>(null);
     const errRef = useRef<HTMLParagraphElement>(null);
+    const navigate = useNavigate();
 
     const [guarantors, setGuarantors] = useState<Guarantor[]>([{ firstName: '', lastName: '', email: '', phone: '', nationalIdFront: null, nationalIdBack: null, letterFile: null }]);
     const [error, setError] = useState('');
@@ -30,6 +30,12 @@ const MthaminiForm: React.FC = () => {
 
     const addGuarantor = () => {
         setGuarantors([...guarantors, { firstName: '', lastName: '', email: '', phone: '', nationalIdFront: null, nationalIdBack: null, letterFile: null }]);
+    };
+
+    const removeGuarantor = (index: number) => {
+        const updatedGuarantors = [...guarantors];
+        updatedGuarantors.splice(index, 1);
+        setGuarantors(updatedGuarantors);
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -57,11 +63,13 @@ const MthaminiForm: React.FC = () => {
                 formData.append(`guarantors[${index}][letterFile]`, guarantor.letterFile as Blob);
             });
 
-            const response = await axios.post(`${process.env.base_url}/guarantors`, formData, {
+            const response = await axios.post('http://127.0.0.1:4000/api/v1/guarantors', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
+
+            navigate('/vehicle');
 
             if (response.data.status === 'error') {
                 setError(response.data.message);
@@ -79,12 +87,12 @@ const MthaminiForm: React.FC = () => {
     };
 
     return (
-        <section className="container mx-auto p-6">
+        <section className="container mx-auto p-6 font-serif">
             <form onSubmit={handleSubmit} className="space-y-6">
                 <p ref={errRef} className={error ? "text-red-500" : "text-green-500"} aria-live="assertive">{error}</p>
                 <div className=''>
                     {/* back button goes here */}
-                    <FiArrowLeft className='w-4 h-4 relative *:top-10 *:left-10' />
+                    <FiArrowLeft onClick={() => navigate('')} className='w-4 h-4 relative *:top-10 *:left-10' />
                     {/* title of the form is passed here */}
                     <div className='flex flex-col px-12 md:items-center justify-center'>
                         <Link to="/personal" className='bg-green-700 w-24 h-32 rounded-lg '>
@@ -97,14 +105,17 @@ const MthaminiForm: React.FC = () => {
                         </div>
                     </div>
                     {/* user icon goes here */}
-
-
-
                 </div>
 
                 {guarantors.map((guarantor, index) => (
                     <div key={index} className="bg-white rounded-md shadow-md p-6 space-y-6">
-                        <h2 className="text-lg font-semibold">guarantor {index + 1}</h2>
+                        <div className='flex justify-between items-center cursor-pointer hover:bg-gray-300 p-2 rounded-md'>
+                            <h2 className="text-lg font-semibold">Mthamini {index + 1}</h2>
+                            <FiMinus onClick={() => removeGuarantor(index)} className='w-4 h-4' />
+                        </div>
+
+                        {/* Render input fields for each guarantor */}
+                         {/* ... (other input fields) */}
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
@@ -214,14 +225,14 @@ const MthaminiForm: React.FC = () => {
                 <button
                     type='button'
                     onClick={addGuarantor}
-                    className='w-full bg-green-600 text-white py-2 rounded-md text-lg font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500'
+                    className='w-full bg-green-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500'
                 >
                     Add Another Guarantor
                 </button>
 
                 <button
                     type='submit'
-                    className='w-full bg-green-600 text-white py-2 rounded-md text-lg font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500'
+                    className='w-full bg-green-600 text-white py-2 rounded-md text-sm font-semibold hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500'
                     disabled={isLoading}
                 >
                     {isLoading ? 'Loading...' : 'Submit'}

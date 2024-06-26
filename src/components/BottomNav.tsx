@@ -1,15 +1,13 @@
-// BottomNavBar.js
-import React, { useState } from 'react';
-import { MdPayment, MdDashboardCustomize, MdAccountBox, MdNotifications } from "react-icons/md";
-
+import React from 'react';
+import { MdPayment, MdDashboardCustomize, MdAccountBox } from "react-icons/md";
 import { Link } from 'react-router-dom';
+import { useAppContext } from '../context/AppProvider';
 
 const BottomNavBar = () => {
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const { activeTab, setActiveTab } = useAppContext();
 
   const handleTabChange = (tabName: string) => {
     setActiveTab(tabName);
-    console.log(activeTab)
   };
 
   return (
@@ -23,21 +21,21 @@ const BottomNavBar = () => {
         <p className={`${activeTab === 'home' ? 'text-lg font-bold' : 'hidden'}`}>Home</p>
       </Link>
 
-      <Link 
+      <Link
         to="/loans"
-        onClick={() =>  handleTabChange('payment')}
-        className={`${activeTab === 'payment' ? 'active flex bg-green-100 py-2 px-4 gap-x-2 rounded-2xl text-green-700 items-center ' : ''}`}>
-        <MdPayment size={22} color="green"/>
-        <p className={`${activeTab === 'payment' ? 'text-lg font-bold':'hidden'}`}>Loan</p>
+        onClick={() => handleTabChange('payment')}
+        className={`${activeTab === 'payment' ? 'active flex bg-green-100 py-2 px-4 gap-x-2 rounded-2xl text-green-700 items-center' : ''}`}
+      >
+        <MdPayment size={22} color="green" />
+        <p className={`${activeTab === 'payment' ? 'text-lg font-bold' : 'hidden'}`}>Loan</p>
       </Link>
-
-      
 
       <Link
         to="/profile"
         onClick={() => handleTabChange('profile')}
-        className={`${activeTab === 'profile' ? 'active flex bg-green-100 py-2 px-4 gap-x-2 rounded-b-2xl text-green-700 items-center' : ''}`}>
-        <MdAccountBox size={22} color='green'/>
+        className={`${activeTab === 'profile' ? 'active flex bg-green-100 py-2 px-4 gap-x-2 rounded-b-2xl text-green-700 items-center' : ''}`}
+      >
+        <MdAccountBox size={22} color='green' />
         <p className={`${activeTab === 'profile' ? 'font-semibold text-sm' : 'hidden'}`}>Profile</p>
       </Link>
     </nav>

@@ -1,12 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { FaCamera } from 'react-icons/fa6';
-import { FiCamera, FiToggleLeft, FiToggleRight } from 'react-icons/fi';
-const profilePic = require('../../assets/profile.jpg')
-
+import { FiToggleLeft, FiToggleRight } from 'react-icons/fi';
+import { useAppContext } from '../../context/AppProvider';
+const profilePic = require('../../assets/profile.jpg');
 
 const Header = () => {
-    const [showBalances, setShowBalances] = useState(false);
-    const [enableNotification, setEnableNotification] = useState(true);
+    const { showBalances, enableNotification, toggleBalances, toggleNotification } = useAppContext();
     const [profileImage, setProfileImage] = useState(profilePic);
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -37,13 +36,6 @@ const Header = () => {
             }, 200);
         }
     };
-    const handleToggleBalances = () => {
-        setShowBalances(!showBalances);
-    };
-
-    const handleToggleNotification = () => {
-        setEnableNotification(!enableNotification);
-    };
 
     const handleUploadClick = () => {
         if (fileInputRef.current) {
@@ -51,11 +43,10 @@ const Header = () => {
         }
     };
 
-
     return (
-        <section className='max-w-screen-full mx-auto bg-[#72c053] text-white overflow-hidden h-[180px] md:h-[230px] px-6 sm:px-8 md:px-12 lg:px-24'>
-            <div className='m-8 flex flex-col'>
-                <div className='flex justify-between items-center mb-4'>
+        <section className='max-w-screen-full mx-auto bg-[#72c053] text-white overflow-hidden h-[190px] md:h-[230px] px-6 sm:px-8 md:px-12 lg:px-24'>
+            <div className='my-8 px-4 flex flex-col'>
+                <div className='flex justify-between items-center mb-8'>
                     <div className='flex w-full justify-between items-center'>
                         <p className='text-3xl font-bold mr-4'>My Account</p>
                         <div className='relative'>
@@ -94,19 +85,18 @@ const Header = () => {
                 <div className='flex flex-col justify-center md:mx-auto'>
                     <div className='flex items-center mb-4'>
                         <p className='mr-4 text-sm'>Show Dashboard Account Balances</p>
-                        <button onClick={handleToggleBalances}>
+                        <button onClick={toggleBalances}>
                             {showBalances ? <FiToggleLeft className='w-6 h-6' /> : <FiToggleRight className='w-6 h-6 text-orange-300' />}
                         </button>
                     </div>
                     <div className='flex items-center'>
                         <p className='mr-4 text-sm'>Enable Notification</p>
-                        <button onClick={handleToggleNotification}>
+                        <button onClick={toggleNotification}>
                             {enableNotification ? <FiToggleRight className='w-6 h-6 text-orange-300' /> : <FiToggleLeft className='w-6 h-6' />}
                         </button>
                     </div>
                 </div>
             </div>
-          
         </section>
     );
 };
