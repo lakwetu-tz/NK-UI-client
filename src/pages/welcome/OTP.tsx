@@ -50,7 +50,7 @@ const OTPVerification: React.FC = () => {
       console.log(typeof(response.data.message));
 
       if (response.data.message === 'User verified successfully') {
-        navigate('/home');
+        navigate('/login');
       }
     } catch (error: any) {
       setMessage(error.response?.data?.message || 'An error occurred');

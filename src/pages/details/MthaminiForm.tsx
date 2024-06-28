@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { FiArrowLeft, FiMinus, FiUserPlus } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
+import { useFormContext } from '../../context/FormProvider';
+
 
 interface Guarantor {
     firstName: string;
@@ -17,6 +19,7 @@ const MthaminiForm: React.FC = () => {
     const emailRef = useRef<HTMLInputElement>(null);
     const errRef = useRef<HTMLParagraphElement>(null);
     const navigate = useNavigate();
+    const { formId } = useFormContext();
 
     const [guarantors, setGuarantors] = useState<Guarantor[]>([{ firstName: '', lastName: '', email: '', phone: '', nationalIdFront: null, nationalIdBack: null, letterFile: null }]);
     const [error, setError] = useState('');
@@ -58,26 +61,33 @@ const MthaminiForm: React.FC = () => {
                 formData.append(`guarantors[${index}][lastName]`, guarantor.lastName);
                 formData.append(`guarantors[${index}][email]`, guarantor.email);
                 formData.append(`guarantors[${index}][phone]`, guarantor.phone);
-                formData.append(`guarantors[${index}][nationalIdFront]`, guarantor.nationalIdFront as Blob);
-                formData.append(`guarantors[${index}][nationalIdBack]`, guarantor.nationalIdBack as Blob);
-                formData.append(`guarantors[${index}][letterFile]`, guarantor.letterFile as Blob);
             });
 
-            const response = await axios.post('http://127.0.0.1:4000/api/v1/guarantors', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+            const response = await axios.post('http://127.0.0.1:4000/api/v1/guarantor/guarantors', { formId, formData });
+
+            if (response.data.status === 'Ok') {
+                const formId = response.data.formId;
+                const uploads = guarantors.map(guarantor => ({
+                    nationalIdFront: guarantor.nationalIdFront,
+                    nationalIdBack: guarantor.nationalIdBack,
+                    letterFile: guarantor.letterFile,
+                }));
+                const result = await axios.post("http://127.0.0.1:4000/api/v1/guarantor/upload", { formId, uploads },
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+
+                if (result.data.status === 'Ok') {
+                    console.log("Uploaded successfully");
+                    setIsLoading(false);
+                    navigate('/vehicle');
                 }
-            });
-
-            navigate('/vehicle');
-
-            if (response.data.status === 'error') {
+            } else if (response.data.status === 'error') {
                 setError(response.data.message);
                 setIsLoading(false);
-                return;
             }
-
-            // Handle successful submission (e.g., navigate to a different page)
         } catch (err) {
             setError('An unexpected error occurred');
             console.error('Error during form submission:', err);
@@ -89,7 +99,10 @@ const MthaminiForm: React.FC = () => {
     return (
         <section className="container mx-auto p-6 font-serif">
             <form onSubmit={handleSubmit} className="space-y-6">
-                <p ref={errRef} className={error ? "text-red-500" : "text-green-500"} aria-live="assertive">{error}</p>
+                <div className={`p-4 rounded-md  text-center ${error ? 'bg-red-50 border-red-300 border' : ''}`}>
+                    <p ref={errRef} className={error ? "text-red-500" : "text-green-500"} aria-live="assertive">{error}</p>
+
+                </div>
                 <div className=''>
                     {/* back button goes here */}
                     <FiArrowLeft onClick={() => navigate('')} className='w-4 h-4 relative *:top-10 *:left-10' />

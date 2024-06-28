@@ -102,7 +102,6 @@ const PersonalForm: React.FC = () => {
 
             if (response.data.status === 'submitted') {
                 setIsLoading(true);
-                console.log("Sending images to the server")
                 setFormData({});
                 const result = await axios.post('http://127.0.0.1:4000/api/v1/form/personal/upload', { formId, frontId, backId },
                         {
@@ -111,7 +110,6 @@ const PersonalForm: React.FC = () => {
                             },
                         }
                     );
-                    console.log(result.data.status);
 
                 if (result.data.status === 'Ok') {
                     setIsLoading(false);

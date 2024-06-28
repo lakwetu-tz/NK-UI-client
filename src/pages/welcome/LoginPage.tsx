@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthProvider';
 import { useAppContext } from '../../context/AppProvider';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Login = () => {
   const [phone, setPhone] = useState('');
@@ -14,6 +15,11 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   console.log(`${process.env.base_url}/user/login`)
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -63,12 +69,6 @@ const Login = () => {
         <h1>Loan Portal</h1>
       </div>
 
-      {/* <button type='button' className='flex w-full justify-center border lg:w-[400px] py-2 px-8 rounded-md mb-4'>
-        <FcGoogle size="22px" />
-        <p className=' px-2 font-bold'>Continue with Google </p>
-
-      </button>
-      <p className='mb-4'>Or</p> */}
       <form onSubmit={handleSubmit} className='w-full mb-4 px-2' >
 
         <div className="mb-4">
@@ -76,7 +76,7 @@ const Login = () => {
             type="tel"
             id="phone"
             name="phone"
-            placeholder="phone number"
+            placeholder="Phone number"
             className="px-4 py-2 text-black text-sm border-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -84,19 +84,23 @@ const Login = () => {
 
           />
         </div>
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             id="password"
             name="password"
-            placeholder="Enter your password"
+            placeholder="Password"
             className="px-4 py-2 text-black text-sm border-2 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-green-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={toggleShowPassword}>
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </div>
 
         </div>
+     
         {error && <p className='text-red-600 mb-2'>{error}</p>}
         <button
           type='submit'
